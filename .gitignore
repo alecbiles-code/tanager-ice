@@ -1,0 +1,21 @@
+# data / derived products (never commit the cube)
+cache/
+outputs/
+*.h5
+*.hdf5
+*.tif
+*.tiff
+*.npz
+!outputs/.gitkeep
+!cache/.gitkeep
+
+# python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+build/
+dist/
+.ipynb_checkpoints/
+.pytest_cache/
