@@ -3,6 +3,16 @@
 Tanager hyperspectral snow/ice characterisation with conformal per-pixel uncertainty.
 Submission work for the Planet Tanager Open Data Competition (due 2026-08-31).
 
+## Companion website
+
+A readable version of the memo, with every figure and a browsable view of this
+pipeline, is published via GitHub Pages:
+
+> **https://alecbiles-code.github.io/tanager-ice/**
+
+The site source lives in [`docs/`](docs/) (`docs/index.html` is the memo,
+`docs/code.html` is the code browser).
+
 ## Layout
 
     tanager_ice/     pip-installable core: spectral primitives, separability,

@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Polar Gap: Open Hyperspectral Coverage Above 70° North</title>
+<meta name="description" content="A Baffin Island case study at 73.7° N, extended to every cryosphere scene in the open Tanager catalog: what the surface-reflectance product supports over bright snow and ice, what it does not yet, and why the polar gap matters.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Serif+4:ital,opt@0,8..60;1,8..60&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html"><span class="dot"></span>The Polar Gap</a>
+    <nav class="nav">
+      <a href="index.html">Memo</a>
+      <a href="code.html">Code &amp; pipeline</a>
+      <a class="cta" href="https://github.com/alecbiles-code/tanager-ice" target="_blank" rel="noopener">GitHub&nbsp;↗</a>
+    </nav>
+  </div>
+</div>
+
+<div class="shell with-toc">
+
+  <aside class="toc" id="toc">
+    <p class="lbl">On this page</p>
+    <a href="#overview">Overview</a>
+    <a href="#claims">Key claims</a>
+    <a href="#results">Results at a glance</a>
+    <a href="#s1">1. The blind spot</a>
+    <a href="#s2">2. Scene &amp; catalog</a>
+    <a href="#s3">3. Aerosol couples to surface</a>
+    <a href="#s4">4. Surface-state retrievals</a>
+    <a href="#s4-1" class="sub">4.1 Grain-size proxy</a>
+    <a href="#s4-2" class="sub">4.2 Melt not evaluable</a>
+    <a href="#s5">5. Access, not spectroscopy</a>
+    <a href="#s6">6. Limitations</a>
+    <a href="#s7">7. Why release these scenes</a>
+    <a href="#methods">Methods &amp; references</a>
+    <a href="#appendix">Appendix</a>
+  </aside>
+
+  <main>
+    <header class="hero">
+      <div class="eyebrow">Tanager · Arctic Cryosphere · Public Beta feedback</div>
+      <h1>The Polar Gap: Open Hyperspectral Coverage Above 70° North</h1>
+      <p class="sub">A Baffin Island case study at 73.7° N, extended to every cryosphere scene in the open Tanager catalog: what the surface-reflectance product supports over bright snow and ice, what it does not yet, and why the polar gap matters.</p>
+      <div class="chips">
+        <span class="chip">Scene <b>20250606_181248_58_4001</b></span>
+        <span class="chip">Catalog survey <b>n = 6</b></span>
+        <span class="chip"><b>73.7° N</b> · Baffin Island</span>
+        <span class="chip">By <b>Alec Biles</b></span>
+      </div>
+      <div class="hero-actions">
+        <a class="btn primary" href="#overview">Read the memo</a>
+        <a class="btn ghost" href="code.html">Browse the pipeline</a>
+        <a class="btn ghost" href="Tanager_Arctic_Cryosphere_Memo.docx" download>Download original (.docx)</a>
+        <a class="btn ghost" href="https://github.com/alecbiles-code/tanager-ice" target="_blank" rel="noopener">Full code on GitHub ↗</a>
+      </div>
+    </header>
+
+    <hr class="rule">
+
+    <div class="prose">
+
+      <section id="overview">
+        <div class="overview">
+          <span class="tag">Overview</span>
+          <p>Every spring the Arctic coast begins to melt, and how fast it melts depends on properties of the snow and ice surface that almost nothing in orbit can currently measure. The one instrument class that could, an imaging spectrometer, either cannot reach the high Arctic or does not fly there openly. Tanager can, and does. Pointed at the Baffin Island coast at 73.7° N in the first week of melt, it delivers a floe-by-floe map of snow grain state across an entire marginal ice field, and enough spectral detail to catch an error in the product's own atmospheric processing that makes surface melt unreadable in half the released polar scenes. We diagnose that error, show it recurs across the catalog, and hand Planet a fix while the product is still in Public Beta. The instrument is sensitive enough to grade its own processing chain. What it needs now is scenes. Just 3 of the 153 in the open catalog lie above 70° N.</p>
+        </div>
+      </section>
+
+      <section id="claims">
+        <h2><span class="num">§</span> Key claims</h2>
+        <div class="claims">
+          <div class="claim">
+            <span class="cn">1</span>
+            <div class="cbody">
+              <h4>Access, established as fact</h4>
+              <p>At 73.7° N, Tanager is the <b>only imaging spectrometer with an open catalog that can see this scene at all</b>. EMIT is excluded by its ISS orbit (~52° inclination) and PRISMA by its 70° N acquisition envelope; EnMAP can task the site but is a single on-demand mission with competed tasking. Sentinel-2 does fly here, and carries no surface band between 958 and 1565 nm, exactly where the 970 nm liquid-water and 1030 nm grain features sit. Under nominal band models the spectrometer fleet would sample these features equally well (EnMAP 97%, EMIT 97%, PRISMA 95%, Sentinel-2 0%), so the differentiator at this latitude is access, not spectroscopy. That is a statement about orbits and band placement, not a contested measurement.</p>
+            </div>
+          </div>
+          <div class="claim">
+            <span class="cn">2</span>
+            <div class="cbody">
+              <h4>Floe-scale snow grain state, resolved</h4>
+              <p>A Nolin–Dozier grain retrieval carrying calibrated per-pixel uncertainty (89.9% empirical coverage against a 90% target) resolves floe-to-floe grain variability across the marginal ice field at roughly 4× its spatially-corrected standard error, which is the quantity albedo-feedback work actually needs. We are equally clear about the limit: per-pixel class means are not resolved.</p>
+            </div>
+          </div>
+          <div class="claim">
+            <span class="cn">3</span>
+            <div class="cbody">
+              <h4>Surface melt is not evaluable from this product, and that is the finding Planet can act on</h4>
+              <p>Read as liquid water, the retrieval implies 17–47% liquid in three of six surveyed cryosphere scenes, at or above the largest fraction ever measured for late-season Arctic melt, over cold April-to-June snowpack. On Baffin the mechanism is visible directly: a one-signed residual notch at the 941 nm water-vapor band core (−8.5× per-pixel uncertainty; 42% improvement in fit RMS) that no surface process can produce. Resolving a 13 nm artifact at a band core takes ~5 nm sampling over a scene at this latitude, so this audit is itself a demonstration of the instrument's diagnostic power, not a mark against it. The product is in Public Beta, and the finding ships with two cheap screening metrics and a concrete fix, inside the window where it can still be acted on.</p>
+            </div>
+          </div>
+        </div>
+        <p class="synthnote">Every retrieval and every guard was validated on synthetic data in both directions, including deliberately null cases, before touching the scene. Full pipeline and tests: <a href="https://github.com/alecbiles-code/tanager-ice" target="_blank" rel="noopener">github.com/alecbiles-code/tanager-ice</a>.</p>
+      </section>
+
+      <section id="results">
+        <h2><span class="num">◆</span> Results at a glance</h2>
+        <div class="tablewrap">
+          <table class="results">
+            <thead><tr><th>Result</th><th>Value</th><th>What it establishes</th></tr></thead>
+            <tbody>
+              <tr><td>Catalog-wide melt confound</td><td>3 of 6 open cryosphere scenes imply 17–47% liquid water</td><td>exceeds the largest value ever measured for late-season Arctic melt → recurring, not one scene</td></tr>
+              <tr><td>Retrieved AOD, catalog-wide</td><td>above Arctic-summer climatology in 5 of 6 scenes (0.06–0.99)</td><td>elevated aerosol retrieval over bright cryosphere is systematic</td></tr>
+              <tr><td>AOD–surface coupling (Baffin)</td><td>within-class r = 0.38; quintile-resolved 0.40</td><td>AOD partly surface-driven; shape-based retrievals required</td></tr>
+              <tr><td>Vapor-band residual (Baffin)</td><td>one-signed 941 nm core notch, −8.5× per-pixel uncertainty; fit RMS improves 42%</td><td>AC vapor stage leaves band-shaped structure in the SR product</td></tr>
+              <tr><td>Melt retrievability</td><td>not evaluable from this SR product</td><td>mechanism diagnosed; fix identified (vapor screening / radiance domain)</td></tr>
+              <tr><td>Grain brightness test</td><td>global r = +0.44; within-bin r spans −0.63 to +0.26</td><td>no single stable brightness confound; test at fixed albedo instead</td></tr>
+              <tr><td>Grain class separation at fixed albedo</td><td>mean 0.9× IQR (0.3–1.8 across bins)</td><td>real but marginal material signal</td></tr>
+              <tr><td>Per-pixel interval vs class gap</td><td>half-width 3.1 vs separation 0.43</td><td>per-pixel class means not resolved</td></tr>
+              <tr><td>Floe-scale grain variability</td><td>spread 1.21 vs corrected SE 0.32</td><td>floe-to-floe differences resolved (effective-N corrected)</td></tr>
+              <tr><td>Fleet band-placement retention</td><td>EnMAP 97% / EMIT 97% / PRISMA 95% / S2 0%</td><td>band placement equivalent across spectrometers; S2 structurally blind</td></tr>
+              <tr><td>Open catalog above 70° N</td><td>3 of 153 scenes</td><td>the polar catalog is nearly empty</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <h2 id="s1"><span class="num">1.</span> The blind spot in Arctic observation</h2>
+      <p>Every spring the Arctic coast begins to melt, and the timing and pattern of that melt govern how much sunlight the surface absorbs. The snow- and ice-albedo feedback is a central amplifier of Arctic warming. The surface properties that drive it are snow grain size and the presence of liquid water. The Arctic is warming at around three to four times the global average rate, and this feedback is one of the main reasons why: melting snow and ice replace the brightest natural surface on Earth with one of the darkest, so each increment of melt buys the next one. The moment the melt begins, it sets the trajectory of the entire season, and there is essentially no open spaceborne hyperspectral coverage of the Arctic coast at all.</p>
+      <p>The difficulty is a gap between two classes of instrument. The imaging spectrometer that could resolve surface state (EMIT) physically cannot reach the high Arctic: it observes from the International Space Station, whose ~52° orbital inclination places the Arctic coast outside its swath. Meanwhile the multispectral sensors that do fly there cannot see the diagnostic features: Sentinel-2 carries no surface band between 958 and 1565 nm (B10 at 1375 nm is a cirrus channel excluded from L2A surface products), and both the 970 nm liquid-water and 1030 nm grain features fall inside that gap. The right spectral tool is in the wrong orbit; the right orbit carries the wrong spectral tool. The rest of the spaceborne spectrometer fleet does not close the gap either: PRISMA's acquisition envelope stops at 70° N, and EnMAP is a single on-demand mission (Section 5 quantifies this). Tanager can fill this hole. Whether it does depends on release decisions: only 3 of the 153 scenes in the open catalog we surveyed lie above 70° N, and only 7 carry the snow-and-ice designation at any latitude.</p>
+
+      <figure class="fig">
+        <img src="figures/fig1.png" alt="Map showing the scene location at 73.7° N relative to the reach of EMIT, PRISMA, EnMAP and Tanager.">
+        <figcaption><b>Figure 1. Where the scene sits, and which spectrometers can reach it.</b> At 73.7° N the acquisition lies ~21° poleward of EMIT's ~52° ISS-orbit limit and 3.7° poleward of PRISMA's 70° N acquisition envelope; EnMAP can task the latitude but is a single on-demand swath. Airborne imaging spectroscopy has retrieved snow liquid water and grain size over Arctic sea ice (Rosenburg et al., 2023); what is missing is open, untasked spaceborne coverage at these latitudes. Only 3 of 153 open-catalog scenes lie above 70° N.</figcaption>
+      </figure>
+
+      <h2 id="s2"><span class="num">2.</span> The scene, and the catalog around it</h2>
+      <p><b>Baffin Island coast, Nunavut · 73.7° N · 6 June 2025.</b> A melt-onset acquisition holding three cryosphere regimes in one frame: snow-covered mountain terrain (coregistered Copernicus GLO-30 DEM: 0–278 m relief, 44% land), sea ice from consolidated floes to a broken marginal-ice field, and open water. Near-nadir (4°), solar elevation 38.6° (zenith ~51°), 33.3 m sampling. The full footprint (73.61–73.82° N) clears EMIT's reach. Detailed retrievals below use this scene; Sections 3 and 4.2 then test their conclusions against all seven snow-and-ice scenes in the open catalog (six analysed; one carries only 156 bright-cryosphere pixels and is reported as skipped), spanning 56–76° N and April to June.</p>
+
+      <figure class="fig">
+        <img src="figures/fig2.png" alt="Three views of the same coastline: true colour, grain-size proxy, and 970 nm band-depth field.">
+        <figcaption><b>Figure 2. Same coastline, three views.</b> Left: true colour. Centre: the grain-size-sensitive proxy over ice-bearing pixels. Right: the 970 nm band-depth field, whose surprising attribution Section 4.2 resolves.</figcaption>
+      </figure>
+
+      <h2 id="s3"><span class="num">3.</span> The aerosol term couples to the surface</h2>
+      <p class="oneline">In one line: the correction's aerosol term is partly tracking the surface beneath it, the first sign that atmosphere and surface are not cleanly separated over bright snow.</p>
+      <p>A note on product status first, because it frames everything below: Tanager surface reflectance is a Public Beta product, stable enough for broad use, not yet a final release version. What follows is offered as beta-window feedback with transferable diagnostics attached, not as a verdict on a finished product.</p>
+      <p>The retrieved aerosol optical depth over the Baffin scene averages 0.70, roughly seven times the Arctic-summer background of ~0.05–0.15 (MODIS/AERONET climatology), and the AOD map visibly traces surface features, down to individual valleys. High AOD alone could be real transported smoke; the diagnostic is the spatial coupling. Within the single sea-ice class, AOD correlates with surface brightness at r = 0.38, and the strongest within-brightness-quintile coupling reaches 0.40, a pattern a genuine aerosol field, smooth over tens of kilometres, cannot produce inside a narrow brightness stratum of one surface type. Mean AOD also steps by 0.23 across the coastline, though that step could partly reflect differently conditioned retrievals over water versus snow, so the within-class coupling is the cleaner tell. The atmospheric correction is ISOFIT-family optimal estimation, solving atmosphere and surface jointly; over bright, spectrally flat snow that inversion is known to be ill-posed, and this scene shows the expected symptom: surface structure leaking into the atmospheric term.</p>
+      <p>Across the catalog the elevation is systematic but the coupling is not. Retrieved AOD exceeds Arctic-summer climatology in five of six surveyed cryosphere scenes (means 0.06 to 0.99); only the Fram Strait scene sits inside climatology at 0.063. Within-class coupling, however, clears our 0.3 threshold in only one scene under the gate we pre-registered (one-sided, r &gt; 0.3). A second scene shows |r| = 0.49 of the opposite sign, which the one-sided gate ignored; two-sided coupling is the physically correct test, since non-separation of atmosphere and surface can go either way, and under it two of six scenes couple. We recognised that after inspecting the data, so it is reported as an observation rather than as a passed pre-registered test. The honest reading: elevated aerosol retrieval over bright cryosphere is the norm in this catalog, while demonstrable surface coupling is present in a minority of scenes, and the per-class correlation is the cheap screening metric that separates them.</p>
+
+      <figure class="fig">
+        <img src="figures/fig3.png" alt="Aerosol trust diagnostic: retrieved AOD beside surface brightness, and within-class AOD-brightness coupling.">
+        <figcaption><b>Figure 3. The aerosol trust diagnostic on the Baffin scene.</b> Top: retrieved AOD (mean 0.70) beside 650 nm surface brightness, the AOD field traces valleys. Bottom: within-class AOD–brightness coupling; sea ice exceeds the 0.3 threshold (r = 0.38). Framed as a property of the joint-inversion problem over bright snow, not a defect of the product.</figcaption>
+      </figure>
+
+      <h2 id="s4"><span class="num">4.</span> Surface-state retrievals, with their confounds tested</h2>
+
+      <h3 id="s4-1">4.1 &nbsp;Grain-size-sensitive proxy: real but marginal</h3>
+      <p class="oneline">In one line: the grain signal is real and physically sound, but it is a field rather than a per-pixel label. Trust it across a floe, not inside a single 33 m pixel.</p>
+      <p>We retrieve the Nolin–Dozier 1030 nm scaled band area (Nolin and Dozier, 2000) for 196,169 ice-bearing pixels, with a normalized split-conformal interval built on Planet's per-band reflectance-uncertainty cube (empirical coverage 89.9% against a 90% target) measured against each pixel's local spatial neighbourhood, not against field truth, of which none exists here. The validity question is whether the proxy tracks grain or brightness: globally it correlates with 1100 nm reflectance at +0.44, the wrong sign for grain physics. Stratifying into six albedo bins (albedo from visible bands, independent of the 1030 nm feature) shows the within-bin coupling is sign-inconsistent, spanning −0.63 to +0.26 and trending with albedo, so there is no single stable brightness confound to remove; the informative test is instead whether the surface classes still separate at fixed brightness. They do at the bright and dark ends (up to 1.8× the within-class IQR) but nearly merge in the mid-albedo range (0.3–0.4× IQR), plausibly because mid-albedo surfaces on both land and sea are transitional and genuinely converge in grain state.</p>
+      <p>Our characterization is therefore modest: a real but marginal material signal. On resolution: the median per-pixel 90% half-width (3.1) exceeds the sea-ice–snow class separation (0.43), so per-pixel the class means are not resolved. Grain here is a field, not a per-pixel label. Aggregated to 22 sea-ice floes, the floe-mean standard error falls to 0.32 after deflating the sample size for spatial correlation (naive √N would claim 0.065; we use the effective-N figure). That still does not resolve the small between-class mean difference, but the floe-to-floe grain spread of 1.21 is resolved at ~4× its error: Tanager measures how grain state varies across the ice field, the physically meaningful quantity for albedo work. Two caveats: 0.3% of retrieved pixels carry unphysical negative band areas (darker mixed surfaces whose spectra dip at 940 and ~1130 nm, both atmospheric vapor bands, indicating the Section 4.2 residual dominates where the surface feature is weak); these are masked. And the 960 nm window shoulder sits near the vapor band edge, a vulnerability the class-separation results bound but do not eliminate.</p>
+
+      <figure class="fig">
+        <img src="figures/fig4.png" alt="Grain proxy validity: global correlation, within-bin sign-inconsistency, class separation at fixed albedo, and residual grain field.">
+        <figcaption><b>Figure 4. Is the grain proxy real, or brightness?</b> The global +0.44 proxy–NIR correlation (top left) is sign-inconsistent within albedo bins (top right, −0.63 to +0.26), while class separation at fixed albedo survives at the albedo extremes and weakens mid-range (bottom left). Bottom right: the grain field after removing the global brightness trend.</figcaption>
+      </figure>
+      <figure class="fig">
+        <img src="figures/fig5.png" alt="Grain proxy and its calibrated 90% conformal half-width.">
+        <figcaption><b>Figure 5. The proxy (left) and its calibrated 90% half-width (right).</b> The intervals exceed the between-class separation, which is why class-level claims are made at floe scale, not pixel scale.</figcaption>
+      </figure>
+
+      <h3 id="s4-2">4.2 &nbsp;Melt is not evaluable from this product, on Baffin, and across the catalog</h3>
+      <p class="oneline">In one line: the 970 nm melt signal in this product is not melt. It is the atmospheric correction's own vapor-band residual, and the melt fractions it implies are physically impossible.</p>
+      <p>The 970 nm feature is the natural melt indicator. We guarded it against sub-pixel water mixing (unmixing test: r = −0.09 against water fraction, validated in both directions) and then subjected it to a chain of physical controls. An ice-only spectral control produced a 970 nm residual too ambiguous to attribute, its model misfit the window. We therefore rebuilt the retrieval on the physical two-component model the field uses (Green et al., 2002): asymptotic radiative transfer makes (ln CR)² linear in the published absorption spectra of ice (Warren and Brandt, 2008) and liquid water (Segelstein, 1981), so each pixel is a regression against literature bases that are near-orthogonal over the window.</p>
+      <p>On Baffin the result is decisive, in an unexpected direction. The water loading is enormous (the median pixel's loading is 26× its per-pixel fit uncertainty) but fails physics: read as liquid water it implies a scene-wide fraction near 0.43, i.e. 43% liquid across 200,000 ice pixels including cold high-terrain snowpack at melt onset, where late-season Arctic measurements reach 6.5–17.3% (Rosenburg et al., 2023). The scene-wide absorption minimum sits near 996 nm where dry ice sits at ~1029. Adding a narrow template at the 941 nm atmospheric vapor band core to the same regression exposes the mechanism: a one-signed notch of missing absorption at exactly the vapor band core (−8.5× per-pixel uncertainty), improving the fit RMS by 42%. No surface process produces a narrow negative absorption feature at precisely the atmospheric band centre; this is the fingerprint of the vapor correction stage, over-corrected at the band core, with broad residual wings that are spectrally degenerate with the liquid-water shape at 5 nm sampling.</p>
+      <p>The catalog survey converts this from an anomaly into a characterization. Running the same decomposition over every analysable cryosphere scene in the open catalog, three of six imply liquid-water fractions of 17.3%, 23.0% and 47.4%, at or above the largest fraction ever reported for late-season Arctic melt, in April to June, at 65–74° N. The other three return 1.8%, 2.6% and 4.2%, entirely plausible for early season. This argument rests on physical plausibility against published measurements alone: no uncertainty model, no bias floor and no template calibration enters it. The 940–1000 nm confound is therefore a recurring property of this product over bright cryosphere surfaces, present in half the scenes we could analyse, rather than a feature of one unusual acquisition.</p>
+      <p>Three candour notes on what we do not claim. Pixels are spatially correlated, so we make no scene-level significance claim; the falsification rests on the impossible magnitude, not on a σ. The 941 nm loading's absolute zero point is not calibrated: a narrow template carries a scene-dependent bias floor (~+1.7× on synthetic clean spectra), so only the scene-to-scene spread (−9.0 to +5.8 across the survey) is interpretable, and a smooth-infill null we built to remove that floor proved invalid wherever the residual's wings extend past the infill window, so it is tested per scene and never subtracted when invalid. Finally, the vapor and water loadings are estimated from correlated bases (r ≈ 0.31), so their errors are anti-correlated by construction; any association between the two therefore cannot by itself demonstrate aliasing, and we do not use it as evidence. A purely spectral-calibration shift would imprint a bipolar, derivative-shaped residual, whereas the observed notch is one-signed, pointing to band-strength over-correction, though we do not localize the cause within the correction chain.</p>
+      <p><b>Conclusion:</b> surface melt is not evaluable from this product's 940–1000 nm region, not because the retrieval failed, but because the region carries vapor-band-linked residual structure that any liquid-water retrieval will alias, in half the cryosphere scenes currently released. Two transferable screening metrics fall out: the per-class AOD-versus-brightness correlation of Section 3, and the implied-liquid-fraction plausibility check used here, which needs only a two-component fit and a literature bound. The fix is identified: vapor-residual screening of released scenes, or radiance-domain retrieval (Bohn et al., 2025). During a Public Beta this is exactly the feedback that can still be acted on before v1.</p>
+
+      <figure class="fig">
+        <img src="figures/fig6.png" alt="Attribution test on Baffin: joint decomposition into ice, broad-water and narrow-vapor components with loading maps.">
+        <figcaption><b>Figure 6. The attribution test on Baffin.</b> Left: joint decomposition of the mean ice spectrum into ice, broad-water and narrow-vapor components, the vapor component is a one-signed notch at the 941 nm band core, a feature no surface process produces. Centre/right: the vapor and broad-water loading maps. The broad component's liquid interpretation implies an impossible fraction near 0.43; it is degenerate with the residual's wings.</figcaption>
+      </figure>
+      <figure class="fig">
+        <img src="figures/fig7.png" alt="The two diagnostics across every analysable cryosphere scene in the open catalog.">
+        <figcaption><b>Figure 7. The same two diagnostics across every analysable cryosphere scene in the open catalog</b> (six of seven; one skipped for insufficient bright-cryosphere pixels). Left: the 941 nm core loading, whose scene-to-scene spread is interpretable while its zero point is not. Right: within-class AOD–brightness coupling against the 0.3 threshold. Three scenes return physically impossible implied melt; the confound recurs.</figcaption>
+      </figure>
+
+      <h2 id="s5"><span class="num">5.</span> The capability gap is access, not spectroscopy</h2>
+      <p class="oneline">In one line: four spectrometers could see these features. Only Tanager currently flies where they occur, with an open catalog.</p>
+      <p>Convolving the real ice spectra to each sensor's nominal band model and recomputing the grain retrieval gives a graded answer across the fleet: EnMAP retains 97%, EMIT 97% and PRISMA 95% of the 1030 nm grain signal (per-pixel correlation ≥ 0.998; the 970 nm depth retains 90–95%), while Sentinel-2 retains none, its surface bands jump from 958 to 1565 nm. One nuance at the 970 nm boundary: Sentinel-2's B9 (945 ± 13 nm, carried in L2A at 60 m) ends at 958 nm, so its shoulder approaches but does not sample the feature. This experiment establishes band-placement equivalence, not performance equivalence. It uses Tanager's own spectra under nominal Gaussian band models; it says nothing about the other instruments' signal-to-noise, radiometric calibration, atmospheric correction or real-world retrieval quality, and it never touches EnMAP, EMIT or PRISMA data. Read narrowly, it shows only that these four instruments place bands where the cryosphere features are, and that Sentinel-2 does not. That narrow reading is enough for the argument.</p>
+      <p>What distinguishes Tanager at 73.7° N is access. EMIT cannot observe here: its ISS orbit (~52° inclination) excludes the high Arctic. PRISMA cannot either: its acquisition envelope is bounded at 70° N (ASI mission specification), 3.7° south of this footprint. EnMAP can task the site (80° N envelope) and has demonstrated cryosphere acquisitions, but it is a single 30 km-swath, on-demand science mission with a nominal end of mission in 2026 and globally competed tasking. Tanager is in polar orbit with an open catalog, but that catalog currently holds 3 scenes above 70° N out of 153, and 7 snow-and-ice scenes in total. The polar advantage is real in principle and largely unrealised in practice, which is precisely what a release decision can change. We also report the honest converse for the broadband surface-type task: simulated Sentinel-2 reaches near-parity in label reproducibility (0.95 vs 0.92), reproducibility, not accuracy, since the classifier is trained on the segmentation's own labels, and its finer native resolution (10–20 m vs 33 m) would likely exceed Tanager there in practice. Where surface type is the question, fly the multispectral sensor. Where surface material state is the question, and where the product itself must be audited spectrally, as Section 4.2 shows, only a spectrometer with access will do.</p>
+
+      <figure class="fig">
+        <img src="figures/fig8.png" alt="The sensor ladder: 1030 nm grain-signal retention across the fleet, and the mean ice spectrum as each sensor samples it.">
+        <figcaption><b>Figure 8. The sensor ladder, computed on this scene's ice spectra under nominal band models.</b> Left: 1030 nm grain-signal retention, band-placement equivalence across the spectrometer fleet, structural zero for Sentinel-2. Right: the mean ice spectrum as each sensor samples it. The differentiator at 73.7° N is access: EMIT is excluded by orbit, PRISMA by its 70° N acquisition envelope; EnMAP is taskable but on-demand and single-swath.</figcaption>
+      </figure>
+      <figure class="fig">
+        <img src="figures/fig9.png" alt="Sentinel-2's structural blind zone: both cryosphere-state features fall inside the 958-1565 nm surface-band gap.">
+        <figcaption><b>Figure 9. Sentinel-2's structural blind zone:</b> both cryosphere-state features fall inside the 958–1565 nm surface-band gap (illustrative snow spectrum; 12 surface bands shown, B10 cirrus is excluded from L2A surface products).</figcaption>
+      </figure>
+
+      <h2 id="s6"><span class="num">6.</span> Limitations</h2>
+      <p>There is no field validation: no in-situ measurement was coincident with any scene analysed here, and essentially none exists for open Tanager acquisitions. Uncertainty statements are calibrated precision, not accuracy. Specific limits:</p>
+      <p><b>Grain:</b> the brightness relationship is sign-inconsistent across albedo rather than removed; the surviving class separation is marginal in the mid-albedo range; per-pixel class means are unresolved, and the naive √N aggregation rescue is rejected in favour of the correlation-corrected effective-N figure (5× larger). The internally consistent operator check (band area vs depth, r = 0.95) is near-tautological and is not offered as validation.</p>
+      <p><b>Melt:</b> not evaluable from this product (Section 4.2). The vapor-attribution test used a 13 nm core template; the broad wings of a realistic vapor residual remain spectrally degenerate with liquid water at 5 nm sampling, which is precisely why no liquid claim is made in either direction.</p>
+      <p><b>The catalog survey is small and heterogeneous:</b> six analysable scenes spanning 56–76° N and April to June, one of seven skipped for insufficient bright-cryosphere pixels. It samples the whole released cryosphere catalog, but that catalog is itself small, and elevated AOD in some scenes may be genuine spring aerosol rather than retrieval artifact, which is why the melt conclusion rests on physical impossibility rather than on the AOD level.</p>
+      <p><b>Fleet comparison:</b> band placement only, on Tanager data, under nominal Gaussian response models rather than published SRFs; no claim is made about the other sensors' SNR, calibration or atmospheric correction.</p>
+      <p><b>Topography and solar geometry:</b> a DEM-based C-correction with per-pixel cos(i) is applied over terrain and self-shadowed pixels are masked, but residual BRDF effects at ~51° solar zenith remain, and static DEMs are not coincident with the imagery (Wilder et al., 2024).</p>
+      <p><b>Methodological positioning:</b> the field's frontier is radiance-domain optimal estimation. Bohn et al. (2025) find grain-size discrepancies up to ~200 µm between reflectance- and radiance-domain approaches. We deliberately work in the vendor reflectance product: the point is what any user of the open data can reproduce end-to-end from the shipped product, with the characterization of Sections 3 and 4.2 as the necessary companion.</p>
+
+      <h2 id="s7"><span class="num">7.</span> Why release these scenes</h2>
+      <p>The polar catalog is nearly empty: 3 of 153 open scenes above 70° N, 7 snow-and-ice scenes in total. The instrument's structural advantage over EMIT and PRISMA at these latitudes is currently unrealised in the open data; release decisions are what convert it.</p>
+      <p>Two transferable AC screening metrics, the per-class AOD–brightness correlation and the implied-liquid-fraction plausibility check, are already demonstrated across the whole released cryosphere catalog, and applicable to every future high-latitude scene.</p>
+      <p>Material-state retrievals that multispectral sensors structurally cannot attempt, delivered with calibrated per-pixel uncertainty built on Planet's own uncertainty product.</p>
+      <p>A concrete, falsifiable agenda: vapor-residual screening before v1, radiance-domain melt retrieval, and repeat acquisitions through a melt season on a single high-Arctic land–ice–ocean transect, which no existing open dataset provides.</p>
+      <p><b>The specific ask.</b> The mechanism this competition controls is scene selection, so we name a target rather than a category. Highest value: the land–ice–ocean transect analysed here, the footprint of scene 20250606_181248_58_4001, 73.61–73.82° N on the Baffin Island coast, reacquired across a single melt season, from pre-onset in mid-April through peak melt in late July, at whatever cadence tasking allows. Ten to fifteen scenes on that one transect would constitute the first open hyperspectral melt-season time series anywhere above 70° N, and would convert every diagnostic in this memo from a single-date demonstration into a seasonal measurement. Remaining slots we would spend on latitude spread: any high-Arctic cryosphere coast above 70° N, where the open catalog currently holds three scenes in total. Both asks are cheap to satisfy and immediately testable against the screening metrics of Sections 3 and 4.2.</p>
+      <p>A high-Arctic, melt-season, coastal-transect hyperspectral scene is a scarce asset, and at present the open catalog holds almost none. This submission is a working prototype of the science those scenes unlock, including the audit of the product itself, which is the part Planet can apply to every scene it releases next.</p>
+
+      <hr class="rule">
+
+      <section id="methods">
+        <div class="refbox">
+          <h2 style="border:0">Methods, reproducibility &amp; references</h2>
+          <p>All results come from a scene-agnostic Python pipeline (26 numbered scripts plus a tested primitives package) running end-to-end from the public STAC item: catalog reconnaissance and the EMIT-gap check; scene fetching; the stratified AC trust analysis; DEM-finalized segmentation; the grain retrieval with propagated and conformal uncertainty; the albedo-stratified confound test; the water-guarded melt retrieval, its physical two-component re-test against literature optical constants, and the vapor-attribution decomposition; the negative-band-area diagnosis; effective-N regional aggregation; the Sentinel-2 degradation comparison; the fleet sensor-ladder experiment; and the pipeline-free multi-scene AC survey. Spectral primitives carry known-answer tests; every retrieval method and every guard was validated on synthetic data in both directions, including null cases designed to return no detection, before touching any scene. Small differences between per-section values and the catalog-survey table (e.g. implied fraction 0.43 vs 0.47 on Baffin) reflect different pixel masks and a signed linearization variant used in the survey; both are reported as computed rather than reconciled after the fact. The complete pipeline, including the primitives test suite and the numbered scripts behind every figure, is public at <a href="https://github.com/alecbiles-code/tanager-ice" target="_blank" rel="noopener">github.com/alecbiles-code/tanager-ice</a>.</p>
+          <p style="margin-top:1.2rem"><b>References</b></p>
+          <div class="reflist">
+            <p>Bohn, N., Bair, E. H., Brodrick, P. G., Carmon, N., Green, R. O., Painter, T. H., and Thompson, D. R. (2025): Do we still need reflectance? From radiance to snow properties in mountainous terrain: a case study with the EMIT imaging spectrometer, <i>The Cryosphere</i>, 19, 1279–1302.</p>
+            <p>Green, R. O., Dozier, J., Roberts, D., and Painter, T. (2002): Spectral snow-reflectance models for grain-size and liquid-water fraction in melting snow for the solar-reflected spectrum, <i>Ann. Glaciol.</i>, 34, 71–73.</p>
+            <p>Nolin, A. W., and Dozier, J. (2000): A hyperspectral method for remotely sensing the grain size of snow, <i>Remote Sens. Environ.</i>, 74, 207–216.</p>
+            <p>Rosenburg, S., Lange, C., Jäkel, E., Schäfer, M., Ehrlich, A., and Wendisch, M. (2023): Retrieval of snow layer and melt pond properties on Arctic sea ice from airborne imaging spectrometer observations, <i>Atmos. Meas. Tech.</i>, 16, 3915–3930.</p>
+            <p>Segelstein, D. J. (1981): The complex refractive index of water, M.S. thesis, University of Missouri–Kansas City.</p>
+            <p>Warren, S. G., and Brandt, R. E. (2008): Optical constants of ice from the ultraviolet to the microwave: a revised compilation, <i>J. Geophys. Res.</i>, 113, D14220.</p>
+            <p>Wilder, B. A., Meyer, J., Enterkine, J., and Glenn, N. F. (2024): Improved snow property retrievals by solving for topography in the inversion of at-sensor radiance measurements, <i>The Cryosphere</i>, 18, 5015–5029.</p>
+            <p style="text-indent:0;padding-left:0;color:var(--ink-faint)">Ice and water optical constants were obtained from the public-domain refractiveindex.info tabulations of the above sources.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="appendix">
+        <h2><span class="num">§</span> Appendix. Supporting diagnostics</h2>
+        <p>Full diagnostic figures from the pipeline, including superseded intermediate analyses retained for transparency.</p>
+        <figure class="fig">
+          <img src="figures/figA1.png" alt="Five-class segmentation with the retrieved-AOD panel.">
+          <figcaption><b>Figure A1.</b> Five-class segmentation with the retrieved-AOD panel that motivated the Section 3 diagnostic.</figcaption>
+        </figure>
+        <figure class="fig">
+          <img src="figures/figA2.png" alt="Grain retrieval detail.">
+          <figcaption><b>Figure A2. Grain retrieval detail.</b> The bottom-right proxy-vs-NIR panel (r = +0.38) is the global brightness relationship analysed in Section 4.1; superseded by Figure 4 and retained for transparency.</figcaption>
+        </figure>
+        <figure class="fig">
+          <img src="figures/figA3.png" alt="The physical two-component re-test that triggered the vapor investigation.">
+          <figcaption><b>Figure A3.</b> The physical two-component re-test that triggered the vapor investigation: a very large water loading with an impossible implied liquid fraction, flagged by the pre-registered depth-confound guard, and a scene-wide blue-shift of the absorption minimum.</figcaption>
+        </figure>
+        <figure class="fig">
+          <img src="figures/figA4.png" alt="The earlier ice-only 970 nm control.">
+          <figcaption><b>Figure A4.</b> The earlier ice-only 970 nm control, superseded by Figures A3 and 6. Red marks extra absorption, concentrated over the terrain, the pattern attributed in Section 4.2 to the vapor-band residual, strongest where the joint inversion struggles most.</figcaption>
+        </figure>
+        <figure class="fig">
+          <img src="figures/figA5.png" alt="The negative band-area population.">
+          <figcaption><b>Figure A5.</b> The negative band-area population (0.3% of retrieved pixels): darker mixed surfaces whose mean spectrum dips at 940 and ~1130 nm, both atmospheric vapor bands, corroborating the Section 4.2 mechanism independently.</figcaption>
+        </figure>
+        <figure class="fig">
+          <img src="figures/figA6.png" alt="Melt-state and classification detail.">
+          <figcaption><b>Figure A6.</b> Melt-state and classification detail, including the melt-vs-water-fraction independence test (bottom right, r = −0.09).</figcaption>
+        </figure>
+        <figure class="fig">
+          <img src="figures/figA7.png" alt="Sentinel-2 degradation comparison.">
+          <figcaption><b>Figure A7. Sentinel-2 degradation comparison.</b> The grain panel's exact zero follows from band placement (Section 5); the classification panels show the near-parity reproducibility result.</figcaption>
+        </figure>
+      </section>
+
+    </div><!-- /prose -->
+  </main>
+</div><!-- /shell -->
+
+<footer class="foot">
+  <div class="foot-inner">
+    <p><b>The Polar Gap</b> · A Baffin Island case study at 73.7° N, extended across the open Tanager cryosphere catalog.<br>
+    By Alec Biles · Scene 20250606_181248_58_4001 · Companion to the full pipeline at
+    <a href="https://github.com/alecbiles-code/tanager-ice" target="_blank" rel="noopener">github.com/alecbiles-code/tanager-ice</a><br>
+    <a href="Tanager_Arctic_Cryosphere_Memo.docx" download>Download the original memo (.docx)</a></p>
+  </div>
+</footer>
+
+<div class="lb" id="lightbox"><span class="close" id="lbClose">✕</span><img id="lbImg" alt=""></div>
+
+<script>
+// lightbox
+(function(){
+  var lb=document.getElementById('lightbox'),img=document.getElementById('lbImg');
+  document.querySelectorAll('figure.fig img').forEach(function(el){
+    el.addEventListener('click',function(){img.src=el.src;img.alt=el.alt;lb.classList.add('open');});
+  });
+  function close(){lb.classList.remove('open');img.src='';}
+  lb.addEventListener('click',close);
+  document.getElementById('lbClose').addEventListener('click',close);
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')close();});
+})();
+// scroll-spy TOC
+(function(){
+  var links=Array.prototype.slice.call(document.querySelectorAll('#toc a'));
+  var map={};links.forEach(function(a){var id=a.getAttribute('href').slice(1);var t=document.getElementById(id);if(t)map[id]=a;});
+  var ids=Object.keys(map);
+  function onScroll(){
+    var y=window.scrollY+120,cur=null;
+    ids.forEach(function(id){var t=document.getElementById(id);if(t&&t.offsetTop<=y)cur=id;});
+    links.forEach(function(a){a.classList.remove('active');});
+    if(cur&&map[cur])map[cur].classList.add('active');
+  }
+  window.addEventListener('scroll',onScroll,{passive:true});onScroll();
+})();
+</script>
+</body>
+</html>
